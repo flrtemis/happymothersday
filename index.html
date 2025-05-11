@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Happy Mother's Day – Supercharged Edition</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink1:#ff9a9e;
+  --pink2:#fad0c4;
+  --pink3:#f8a1d1;
+  --purple:#c06cfd;
+  --bg-grad:linear-gradient(135deg,var(--pink1),var(--pink2),var(--pink3));
+  --transition:all .3s ease;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html {
+  height: 100%; /* Optional */
+}
+
+body {
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  background: var(--bg-grad);
+  animation: bgShift 12s ease infinite alternate;
+  position: relative; /* Added for potential absolute positioning of children relative to body */
+}
+
+@keyframes bgShift{
+  0%{filter:hue-rotate(0deg)}
+  100%{filter:hue-rotate(40deg)}
+}
+
+header{
+  text-align:center;
+  padding:8vh 2rem 4vh;
+}
+
+h1{
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(2.5rem,6vw,5rem);
+  letter-spacing:2px;
+  animation:shine 4s linear infinite;
+}
+
+@keyframes shine{
+  0%{text-shadow:0 0 10px rgba(255,255,255,.6)}
+  50%{text-shadow:0 0 35px rgba(255,255,255,1)}
+  100%{text-shadow:0 0 10px rgba(255,255,255,.6)}
+}
+
+.subtitle{
+  font-size:clamp(1rem,2.5vw,1.4rem);
+  margin-top:.5rem;
+  opacity:.9;
+}
+
+/* Sections */
+.section{
+  padding:6vh 1rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:2rem;
+  max-width:1100px;
+  margin:0 auto;
+  text-align:center;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1.2rem;
+  width:100%;
+}
+
+.card{
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(6px);
+  border-radius:14px;
+  padding:1.6rem;
+  transition:var(--transition);
+  cursor:default;
+}
+.card:hover{transform:translateY(-6px) scale(1.03);}
+
+.card-icon{
+  font-size:2.2rem;
+  margin-bottom:.6rem;
+}
+
+/* Image carousel */
+.carousel{
+  position:relative;
+  width:90vw;
+  max-width:900px;
+  /* scroll-snap-type:x mandatory; // Removed for smoother manual control if needed */
+  overflow-x:auto;
+  border-radius:16px;
+  display: flex; /* Added for image alignment */
+}
+.carousel img{
+  width:100%;
+  scroll-snap-align:center; /* Works with scroll-snap-type */
+  flex-shrink:0;
+  object-fit:cover;
+  aspect-ratio:16/9;
+}
+.carousel::-webkit-scrollbar{height: 8px;}
+.carousel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.5); border-radius: 4px;}
+.carousel::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 4px;}
+
+
+/* Modal */
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  display:none; /* Initially hidden */
+  justify-content:center;
+  align-items:center;
+  z-index:1000; /* High z-index to be on top */
+}
+.modal{
+  background:#fff;
+  color:#444;
+  padding:2rem 1.6rem;
+  border-radius:12px;
+  max-width:500px;
+  width: 90%; /* Responsive width */
+  text-align:left;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+.modal h2{font-family:'Great Vibes',cursive;color:var(--purple);font-size:2.2rem;margin-bottom:.6rem}
+.modal button{
+  margin-top:1rem;
+  padding:.6rem 1rem;
+  border:none;
+  border-radius:8px;
+  background:var(--purple);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition: background 0.2s ease;
+}
+.modal button:hover {
+  background: #a04cd8; /* Darker purple on hover */
+}
+
+#closeLetter{background:#ff6b81}
+#closeLetter:hover{background:#e05a70;}
+
+
+/* Floating hearts container (for automated hearts) */
+#heart-container,#petal-container{
+  position:fixed; /* These remain fixed for background effect */
+  inset:0;
+  pointer-events:none;
+  overflow:hidden;
+  z-index:0; /* Behind content */
+}
+
+/* hearts shared style (for both automated and tapped) */
+.heart,.petal{
+  position:absolute; /* Critical for positioning */
+  width:18px;
+  height:18px;
+  pointer-events:none; /* So they don't interfere with clicks */
+}
+
+/* specific style for .heart elements */
+.heart{
+  background:#ff6b81; /* Heart color */
+  transform:rotate(45deg); /* Initial rotation for the square part */
+}
+.heart::before,.heart::after{
+  content:'';
+  position:absolute;
+  width:18px;
+  height:18px;
+  background:#ff6b81; /* Same color as heart */
+  border-radius:50%; /* Makes them circular for the lobes */
+}
+.heart::before{top:-9px;left:0} /* Position top lobe */
+.heart::after{left:-9px;top:0} /* Position side lobe */
+
+/* petals (for automated effect) */
+.petal{
+  background:#ffc0cb; /* Petal color */
+  border-radius:40% 60% 70% 30%; /* Petal shape */
+  opacity:.8;
+}
+
+/* Confetti (for tapped effect, positioned with JS) */
+.confetti{
+  position:absolute; /* Critical for JS positioning */
+  width:6px;height:14px;
+  background:hsl(var(--h,200),90%,60%); /* Dynamic color */
+  transform:rotate(calc(var(--r)*1deg)); /* Dynamic rotation */
+  animation:confetti-fall var(--d,2s) ease-out forwards; /* Fall animation */
+  pointer-events:none;
+}
+@keyframes confetti-fall{
+  to{transform:translateY(100vh) rotateZ(calc(var(--r)*4deg));opacity:0}
+}
+
+footer{
+  text-align:center;
+  padding:6vh 1rem 4vh;
+  font-size:.85rem;
+  opacity:.8;
+}
+
+audio{display:none} /* Hide default audio player */
+#music-toggle{
+  position:fixed;
+  right:18px;bottom:20px;
+  width:46px;height:46px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,.25);
+  backdrop-filter:blur(6px);
+  font-size:1.2rem;
+  color:#fff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  transition:var(--transition);
+  z-index: 1001; /* Above modal background, but can be adjusted */
+}
+#music-toggle.playing{background:rgba(255,255,255,.5)}
+#music-toggle:hover {
+    transform: scale(1.1);
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Happy Mother's Day</h1>
+  <p class="subtitle">Celebrating the amazing women who make our world bloom.</p>
+</header>
+
+<section class="section" id="reasons">
+  <h2 style="font-family:'Great Vibes',cursive;font-size:2.5rem;">A Million Reasons We ❤️ You</h2>
+  <div class="cards">
+    <div class="card"><div class="card-icon">🌷</div><p>Your love nurtures us every single day.</p></div>
+    <div class="card"><div class="card-icon">💪</div><p>You inspire us with your strength and resilience.</p></div>
+    <div class="card"><div class="card-icon">🎓</div><p>You teach life's most precious lessons.</p></div>
+    <div class="card"><div class="card-icon">😂</div><p>Your laugh turns ordinary moments into memories.</p></div>
+    <div class="card"><div class="card-icon">✨</div><p>You believe in us, even when we doubt ourselves.</p></div>
+     <div class="card"><div class="card-icon">🤗</div><p>Your hugs make everything better.</p></div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <h2 style="font-family:'Great Vibes',cursive;font-size:2.5rem;">Moments in Bloom</h2>
+  <div class="carousel">
+    <img src="https://placehold.co/1600x900/ff9a9e/ffffff?text=Sweet+Memory+1" alt="Placeholder image 1 representing a sweet memory" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found';">
+    <img src="https://placehold.co/1600x900/fad0c4/ffffff?text=Joyful+Times+2" alt="Placeholder image 2 representing joyful times" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found';">
+    <img src="https://placehold.co/1600x900/f8a1d1/ffffff?text=Family+Love+3" alt="Placeholder image 3 representing family love" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found';">
+    <img src="https://placehold.co/1600x900/c06cfd/ffffff?text=Special+Moments+4" alt="Placeholder image 4 representing special moments" onerror="this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Not+Found';">
+  </div>
+</section>
+
+<section class="section">
+  <button id="openLetter" style="padding:.8rem 1.6rem;font-size:1rem;border:none;border-radius:10px;background:#ff6b81;color:#fff;font-weight:600;cursor:pointer;transition:var(--transition);">Open Your Love Letter 💌</button>
+</section>
+
+<div class="modal-bg" id="letterModal">
+  <div class="modal">
+    <h2>Dear Mom,</h2>
+    <p>
+      For every scraped knee you kissed, every bedtime story you told, and every dream you encouraged, thank you.
+      Our world is brighter, kinder, and more magical because you're in it.
+      Today is your day—but know that our gratitude blooms every day of the year. We love you more than words can say.
+    </p>
+    <button id="closeLetter">Close ✨</button>
+  </div>
+</div>
+
+<footer>Built with ❤️ and sprinkled with infinite gratitude by your son Brandon.</footer>
+
+<div id="heart-container"></div>
+<div id="petal-container"></div>
+
+<audio id="bg-music" loop preload="auto">
+  <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Komiku/Its_time_for_adventure_/Komiku_-_03_-_Champ_de_tournesol.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<button id="music-toggle" aria-label="Toggle background music">🎵</button>
+
+<script>
+// Utility function
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+// --- AUTOMATED FLOATING ELEMENTS (Viewport Fixed) ---
+// These hearts and petals float in the background and are fixed to the viewport.
+
+// Automated floating hearts (using #heart-container)
+function createFloatingHeart() {
+  const heart = document.createElement('div');
+  heart.className = 'heart'; // Uses .heart styles (position:absolute within fixed container)
+  heart.style.left = randomBetween(0, 100) + 'vw'; // Positioned relative to viewport width
+  heart.style.animation = `floatHeart ${randomBetween(8, 14)}s linear infinite`;
+  heart.style.opacity = randomBetween(0.5, 1);
+  // Scale is applied via animation or can be set here if needed
+  heart.style.transform = `rotate(45deg) scale(${randomBetween(0.6, 1.2)})`; // Initial scale and rotation
+  document.getElementById('heart-container').appendChild(heart);
+  setTimeout(() => {
+    if (heart.parentNode) heart.parentNode.removeChild(heart);
+  }, 16000); // Remove after animation duration
+}
+setInterval(createFloatingHeart, 450); // Create new floating hearts periodically
+
+// Automated falling petals (using #petal-container)
+function createFallingPetal() {
+  const petal = document.createElement('div');
+  petal.className = 'petal'; // Uses .petal styles (position:absolute within fixed container)
+  petal.style.left = randomBetween(0, 100) + 'vw'; // Positioned relative to viewport width
+  petal.style.animation = `petalFall ${randomBetween(9, 16)}s linear`;
+  petal.style.opacity = randomBetween(0.5, 1);
+  petal.style.transform = `rotate(${randomBetween(0, 360)}deg) scale(${randomBetween(0.6, 1)})`;
+  document.getElementById('petal-container').appendChild(petal);
+  setTimeout(() => {
+    if (petal.parentNode) petal.parentNode.removeChild(petal);
+  }, 16000); // Remove after animation duration
+}
+setInterval(createFallingPetal, 700); // Create new falling petals periodically
+
+// Dynamic CSS for animations of automated elements
+const dynamicStyles = document.createElement('style');
+dynamicStyles.textContent = `
+@keyframes floatHeart {
+  0% { transform: rotate(45deg) translateY(0vh) scale(${randomBetween(0.6, 1.2)}); opacity: ${randomBetween(0.5,1)}; }
+  100% { transform: rotate(45deg) translateY(-120vh) scale(${randomBetween(0.4, 0.8)}); opacity: 0; }
+}
+@keyframes petalFall {
+  0% { transform: translateY(-5vh) rotate(${randomBetween(0,100)}deg) scale(${randomBetween(0.6,1)}); opacity: ${randomBetween(0.5,1)};}
+  100% { transform: translateY(105vh) rotate(${randomBetween(260,360)}deg) scale(${randomBetween(0.4,0.8)}); opacity:0; }
+}
+`;
+document.head.appendChild(dynamicStyles);
+
+
+// --- USER-INTERACTION ELEMENTS (Document Relative) ---
+// These hearts and confetti appear where the user clicks/taps and scroll with the document.
+
+/**
+ * Creates a heart element at a specific page coordinate.
+ * The heart is appended to document.body to scroll with the page.
+ * @param {number} pageX - The X coordinate on the page.
+ * @param {number} pageY - The Y coordinate on the page.
+ */
+function createHeartAtPagePosition(pageX, pageY) {
+  const heart = document.createElement('div');
+  heart.className = 'heart'; // Uses .heart styles (position:absolute)
+  // Adjust for the heart's visual center (18px width/height, so offset by 9px)
+  heart.style.left = (pageX - 9) + 'px';
+  heart.style.top = (pageY - 9) + 'px';
+  heart.style.animation = 'none'; // No floating animation for tapped hearts
+  heart.style.transform = `rotate(45deg) scale(${randomBetween(0.5, 0.9)})`; // Slightly smaller, distinct scale
+  heart.style.zIndex = '999'; // Ensure visibility above most content, but below modals
+  
+  document.body.appendChild(heart); // Append to body to scroll with content
+
+  // Fade out and remove the heart
+  heart.style.transition = 'opacity 0.5s ease-out 1.5s'; // Start fading after 1.5s
+  heart.style.opacity = '1'; // Initial opacity
+
+  requestAnimationFrame(() => { // Ensure opacity is set before transition starts
+    heart.style.opacity = '0';
+  });
+
+  setTimeout(() => {
+    if (heart.parentNode) {
+      heart.parentNode.removeChild(heart);
+    }
+  }, 2000); // Total lifespan 2s (0.5s fade + 1.5s visible)
+}
+
+/**
+ * Creates a burst of confetti at specific page coordinates.
+ * Confetti is appended to document.body to scroll with the page.
+ * @param {number} pageX - The X coordinate on the page.
+ * @param {number} pageY - The Y coordinate on the page.
+ */
+function createConfettiBurstAtPagePosition(pageX, pageY) {
+  for (let i = 0; i < 20; i++) { // Reduced confetti count slightly
+    const c = document.createElement('div');
+    c.className = 'confetti'; // Uses .confetti styles (position:absolute)
+    // Position confetti at the document click location
+    c.style.left = pageX + 'px';
+    c.style.top = pageY + 'px';
+    // Randomize properties for varied confetti
+    c.style.setProperty('--r', Math.random() * 360); // Rotation
+    c.style.setProperty('--d', (Math.random() * 1 + 1.2) + 's'); // Duration
+    c.style.setProperty('--h', randomBetween(300, 360)); // Hue (pinks, purples)
+    c.style.zIndex = '998'; // Slightly below tapped hearts if they overlap
+    
+    document.body.appendChild(c); // Append to body
+
+    setTimeout(() => {
+      if (c.parentNode) c.parentNode.removeChild(c);
+    }, 2200); // Lifespan slightly longer than animation
+  }
+}
+
+// Consolidated event listener for clicks
+document.addEventListener('click', function(e) {
+  // Prevent effects on specific interactive elements
+  if (e.target.closest('button, a, .modal, .modal-bg, .card, .carousel, #music-toggle, input, textarea, select')) {
+    return;
+  }
+  createHeartAtPagePosition(e.pageX, e.pageY);
+  createConfettiBurstAtPagePosition(e.pageX, e.pageY);
+});
+
+// Consolidated event listener for touchstart
+document.addEventListener('touchstart', function(e) {
+  // Prevent effects on specific interactive elements
+  if (e.target.closest('button, a, .modal, .modal-bg, .card, .carousel, #music-toggle, input, textarea, select')) {
+    return;
+  }
+  const touch = e.touches[0];
+  createHeartAtPagePosition(touch.pageX, touch.pageY);
+  createConfettiBurstAtPagePosition(touch.pageX, touch.pageY);
+}, { passive: true }); // Use passive listener for touchstart for performance if not calling preventDefault
+
+
+// --- MODAL LOGIC ---
+const openLetterButton = document.getElementById('openLetter');
+const closeLetterButton = document.getElementById('closeLetter');
+const letterModal = document.getElementById('letterModal');
+
+if (openLetterButton && letterModal) {
+  openLetterButton.addEventListener('click', () => {
+    letterModal.style.display = 'flex';
+    // Optional: Pause background effects when modal is open
+    // clearIntervalsForEffects(); 
+  });
+}
+
+if (closeLetterButton && letterModal) {
+  closeLetterButton.addEventListener('click', () => {
+    letterModal.style.display = 'none';
+    // Optional: Resume background effects
+    // startIntervalsForEffects();
+  });
+}
+
+// Close modal with Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && letterModal && letterModal.style.display === 'flex') {
+    letterModal.style.display = 'none';
+    // Optional: Resume background effects
+    // startIntervalsForEffects();
+  }
+});
+
+// Close modal if clicking on the background
+if (letterModal) {
+    letterModal.addEventListener('click', (e) => {
+        if (e.target === letterModal) { // Clicked on the .modal-bg itself
+            letterModal.style.display = 'none';
+            // Optional: Resume background effects
+            // startIntervalsForEffects();
+        }
+    });
+}
+
+
+// --- MUSIC PLAYER LOGIC ---
+const music = document.getElementById('bg-music');
+const musicToggleButton = document.getElementById('music-toggle');
+let firstInteraction = false;
+
+function attemptPlayMusic() {
+    if (music && music.paused && firstInteraction) {
+        music.play().then(() => {
+            musicToggleButton.classList.add('playing');
+            musicToggleButton.textContent = '🔊';
+        }).catch(error => {
+            console.info("Autoplay was prevented. User needs to interact with toggle.", error);
+            musicToggleButton.textContent = '🔇'; // Show muted icon if play fails
+        });
+    }
+}
+
+// Try to play music on first user interaction anywhere on the page
+function handleFirstInteraction() {
+    if (!firstInteraction) {
+        firstInteraction = true;
+        attemptPlayMusic();
+        // Remove these listeners after first interaction
+        document.removeEventListener('click', handleFirstInteraction);
+        document.removeEventListener('touchstart', handleFirstInteraction);
+        document.removeEventListener('keydown', handleFirstInteraction);
+    }
+}
+
+document.addEventListener('click', handleFirstInteraction, { once: true });
+document.addEventListener('touchstart', handleFirstInteraction, { once: true });
+document.addEventListener('keydown', handleFirstInteraction, { once: true });
+
+
+if (musicToggleButton && music) {
+  musicToggleButton.addEventListener('click', () => {
+    firstInteraction = true; // Ensure interaction flag is set
+    if (music.paused) {
+      music.play().then(() => {
+        musicToggleButton.classList.add('playing');
+        musicToggleButton.textContent = '🔊'; // Sound on icon
+      }).catch(error => console.error("Error playing music:", error));
+    } else {
+      music.pause();
+      musicToggleButton.classList.remove('playing');
+      musicToggleButton.textContent = '🎵'; // Sound off icon (or 🔇)
+    }
+  });
+}
+
+// Initial state for music button if needed (e.g. based on cookie)
+// For now, default to '🎵'
+if (musicToggleButton) musicToggleButton.textContent = '🎵';
+
+
+// IMPORTANT REMINDER:
+// You had a separate click listener in your original script that created confetti:
+//
+// document.addEventListener('click',e=>{
+//   for(let i=0;i<24;i++){
+//      const c=document.createElement('div');
+//      c.className='confetti';
+//      c.style.left=e.clientX+'px';  // <-- Note: clientX
+//      c.style.top=e.clientY+'px';   // <-- Note: clientY
+//      c.style.setProperty('--r',Math.random()*360);
+//      c.style.setProperty('--d', (Math.random()*1+1.5)+'s');
+//      c.style.setProperty('--h',Math.random()*360);
+//      document.body.appendChild(c);
+//      setTimeout(()=>c.remove(),2000);
+//   }
+// });
+//
+// **THIS OLD CONFETTI LISTENER MUST BE REMOVED OR COMMENTED OUT**
+// from your script block to avoid creating confetti twice or at the wrong (viewport) position.
+// The new consolidated click/touchstart listeners above now handle confetti correctly using pageX/pageY.
+
+console.log("Mother's Day page script loaded and enhancements applied. Music source updated.");
+</script>
+</body>
+</html>
